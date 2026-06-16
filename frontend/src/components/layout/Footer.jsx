@@ -5,4 +5,4 @@ export const Footer = () => (
       <p className="text-slate-400">Designed for modular apps, reusable components, and clean routing.</p>
     </div>
   </footer>
-}
+);

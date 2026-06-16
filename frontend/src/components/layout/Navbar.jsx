@@ -3,7 +3,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { BUTTON_LABELS, ROUTES } from '../../constants/routes'
 
 export const Navbar = () => {
-  const { user, logout } = useAuth()
+  const { token, logout } = useAuth()
 
   return (
     <header className="border-b border-slate-800 bg-slate-950/90 backdrop-blur-xl">
@@ -15,7 +15,7 @@ export const Navbar = () => {
           <Link to={ROUTES.home} className="rounded-full px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-800/80">
             Home
           </Link>
-          {user ? (
+          {token ? (
             <>
               <Link to={ROUTES.dashboard} className="rounded-full px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-800/80">
                 Dashboard

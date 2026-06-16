@@ -29,8 +29,11 @@ const Login = () => {
 
   const onSubmit = async (formData) => {
     try {
-      await login(formData)
-      navigate(from, { replace: true })
+      const data = await login(formData)
+      navigate(ROUTES.verifyLoginOtp, {
+        replace: true,
+        state: { email: data.email || formData.email, from },
+      })
     } catch (error) {
       toast.error(error?.message ?? 'Unable to login, please try again.')
     }

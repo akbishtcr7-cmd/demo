@@ -15,20 +15,32 @@ const Register = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm()
 
   const onSubmit = async (formData) => {
     try {
-      await registerUser(formData)
-      navigate(ROUTES.dashboard, { replace: true })
+      const data = await registerUser(formData)
+      navigate(ROUTES.verifyRegisterOtp, {
+        replace: true,
+        state: { email: data.email || formData.email },
+      })
     } catch (error) {
+      if (error?.status === 409) {
+        setError('email', {
+          type: 'server',
+          message: error.message ?? 'An account already exists with this email',
+        })
+        return
+      }
+
       toast.error(error?.message ?? 'Unable to register, please try again.')
     }
   }
 
   return (
-    <PageContainer title="Register" description="Create your account and start using the dashboard immediately.">
+    <PageContainer title="Register" description="Create your account and verify your email with a one-time password.">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <Input
           label="Full name"
