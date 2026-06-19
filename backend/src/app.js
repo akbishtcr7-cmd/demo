@@ -15,6 +15,19 @@ app.use((req, res, next) => {
   next();
 });
 
+const getAllowedOrigins = () => {
+  const origins = [
+    process.env.FRONTEND_URL,
+    process.env.FRONTEND_URLS
+  ]
+    .filter(Boolean)
+    .flatMap((value) => value.split(","))
+    .map((origin) => origin.trim().replace(/\/+$/, ""))
+    .filter(Boolean);
+
+  return new Set(origins);
+};
+
 const isLocalFrontend = (origin) => {
   try {
     const { protocol, hostname } = new URL(origin);
@@ -27,10 +40,14 @@ const isLocalFrontend = (origin) => {
   }
 };
 
+const allowedOrigins = getAllowedOrigins();
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || origin === process.env.FRONTEND_URL || isLocalFrontend(origin)) {
+      const normalizedOrigin = origin?.replace(/\/+$/, "");
+
+      if (!origin || allowedOrigins.has(normalizedOrigin) || isLocalFrontend(origin)) {
         return callback(null, true);
       }
 

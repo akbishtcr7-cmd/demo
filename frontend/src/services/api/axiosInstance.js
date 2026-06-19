@@ -15,7 +15,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 30000,
 })
 
 api.interceptors.request.use((config) => {
@@ -32,6 +32,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (!error.response) {
+      if (error.code === 'ECONNABORTED') {
+        return Promise.reject({
+          message: `Request timed out while reaching ${API_BASE_URL}${error.config?.url || ''}`,
+        })
+      }
+
       return Promise.reject({
         message: `Network Error: could not reach ${API_BASE_URL}${error.config?.url || ''}`,
       })
