@@ -16,6 +16,13 @@ const sendEmail = async ({ to, subject, html, text }) => {
       html
     });
   } catch (error) {
+    console.error("SMTP send failed:", {
+      message: error.message,
+      code: error.code,
+      command: error.command,
+      response: error.response
+    });
+
     const emailError = new Error("Email could not be sent");
     emailError.statusCode = 502;
     emailError.cause = error;
